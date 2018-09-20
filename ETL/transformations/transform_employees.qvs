@@ -1,0 +1,33 @@
+///$tab Main
+
+$(Include=..\..\..\general_functions\configIni.txt);
+$(Include=..\..\config\projectConfig.txt);
+
+Call dataSourcePaths;
+Call englishUSVars;
+
+employees:
+LOAD 
+	emp_cod, 
+	emp_name, 
+	emp_birth_date, 
+	if(emp_gender='M', 'Male', 'Female') as emp_gender,
+	Year(now())-Year(emp_birth_date) as emp_age,
+	emp_commision, 
+	store_id, 
+	pos_id, 
+	edu_id
+FROM [$(vPathMirrors)$(vProjectName)\employee.qvd] (qvd);
+
+LEFT JOIN(employees)
+LOAD 
+	*
+FROM [$(vPathMirrors)$(vProjectName)\education.qvd] (qvd);
+
+LEFT JOIN(employees)
+LOAD 
+	*
+FROM [$(vPathMirrors)$(vProjectName)\position_employee.qvd] (qvd);
+
+Call createFolders('$(vPathTransformed)','$(vProjectName)');
+Call storeFiles('$(vPathTransformed)','$(vProjectName)',Null(),Null());

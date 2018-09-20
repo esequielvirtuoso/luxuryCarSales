@@ -1,0 +1,41 @@
+///$tab Main
+
+$(Include=..\..\..\general_functions\configIni.txt);
+$(Include=..\..\config\projectConfig.txt);
+
+Call dataSourcePaths;
+Call englishUSVars;
+
+sales:
+LOAD 
+	sle_itm_id,
+	sle_id, 
+	quantity, 
+	amount, 
+	prd_cod
+FROM [$(vPathMirrors)$(vProjectName)\sales_items.qvd] (qvd);
+
+LEFT JOIN(sales)
+LOAD 
+	*
+FROM [$(vPathMirrors)$(vProjectName)\sales.qvd] (qvd);
+
+LEFT JOIN(sales)
+LOAD 
+	prd_cod, 
+	prd_cost
+FROM [$(vPathMirrors)$(vProjectName)\products.qvd] (qvd);
+
+LEFT JOIN(sales)
+LOAD store_id, 
+     add_id as store_add_id
+FROM [$(vPathMirrors)$(vProjectName)\stores.qvd] (qvd);
+
+LEFT JOIN(sales)
+LOAD 
+	cust_id,  
+    cust_add_id
+FROM [$(vPathMirrors)$(vProjectName)\customers.qvd] (qvd);
+
+Call createFolders('$(vPathTransformed)','$(vProjectName)');
+Call storeFiles('$(vPathTransformed)','$(vProjectName)',Null(),Null());

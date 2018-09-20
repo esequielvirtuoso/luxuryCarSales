@@ -1,0 +1,5 @@
+﻿SET vProjectName = 'luxuryCarsSales';
+
+SUB connectToCarSalesDB
+	ODBC CONNECT TO carSales (XUserId is XMMBfZFMMA, XPassword is JeaFSFFGTBbMXXFMRBOAEQD);
+END SUB

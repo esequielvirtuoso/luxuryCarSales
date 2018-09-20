@@ -1,0 +1,30 @@
+﻿///$tab Main
+
+$(Include=..\..\..\general_functions\configIni.txt);
+$(Include=..\..\config\projectConfig.txt);
+
+Call dataSourcePaths;
+Call englishUSVars;
+Call connectToCarSalesDB;
+
+country:
+SQL SELECT *
+FROM "sales_cars".dbo.country;
+
+state:
+SQL SELECT *
+FROM "sales_cars".dbo.state;
+
+city:
+SQL SELECT *
+FROM "sales_cars".dbo.city;
+
+address:
+SQL SELECT *
+FROM "sales_cars".dbo.address;
+
+// STORE country into [E:\biCourse\FilesDataSources\Mirrors\luxuryCarsSales\country.qvd] (qvd);
+// STORE country into [$(vPathMirrors)$(vProjectName)\country.qvd] (qvd);
+
+Call createFolders('$(vPathMirrors)','$(vProjectName)');
+Call storeFiles('$(vPathMirrors)','$(vProjectName)',Null(),Null());

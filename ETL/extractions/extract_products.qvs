@@ -1,0 +1,23 @@
+///$tab Main
+
+$(Include=..\..\..\general_functions\configIni.txt);
+$(Include=..\..\config\projectConfig.txt);
+
+Call dataSourcePaths;
+Call englishUSVars;
+Call connectToCarSalesDB;
+
+products:
+SQL SELECT *
+FROM "sales_cars".dbo.products;
+
+product_category:
+SQL SELECT *
+FROM "sales_cars".dbo."product_category";
+
+product_brand:
+SQL SELECT *
+FROM "sales_cars".dbo."product_brand";
+
+Call createFolders('$(vPathMirrors)','$(vProjectName)');
+Call storeFiles('$(vPathMirrors)','$(vProjectName)',Null(),Null());
