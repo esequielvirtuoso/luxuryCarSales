@@ -1,0 +1,25 @@
+///$tab Main
+Binary [..\ETL\dataCloud\data_cloud.qvw];
+
+$(Include=..\..\general_functions\configIni.txt);
+$(Include=..\config\projectConfig.txt);
+// here you can make a access config
+
+SET vShowMenu = 0;
+
+
+//----------- COLOR THEME -----------//
+
+// Totals
+SET totalColor = RGB(166,166,166);
+
+// Charts
+SET firstChtColor = RGB(23,192,235);
+SET secondChtColor = RGB(16,155,190);
+
+// KPI
+SET cpCard = RGB(255,144,144);
+SET spCard = RGB(23,192,235);
+
+SET masc = ARGB(200,23,192,235);
+SET fem = ARGB(200,254,152,233);

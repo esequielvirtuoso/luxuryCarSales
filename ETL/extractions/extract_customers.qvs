@@ -1,0 +1,15 @@
+///$tab Main
+
+$(Include=..\..\..\general_functions\configIni.txt);
+$(Include=..\..\config\projectConfig.txt);
+
+Call dataSourcePaths;
+Call englishUSVars;
+Call connectToCarSalesDB;
+
+customers:
+SQL SELECT *
+FROM "sales_cars".dbo.customers;
+
+Call createFolders('$(vPathMirrors)','$(vProjectName)');
+Call storeFiles('$(vPathMirrors)','$(vProjectName)',Null(),Null());

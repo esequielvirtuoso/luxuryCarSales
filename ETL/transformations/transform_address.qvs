@@ -1,0 +1,35 @@
+///$tab Main
+
+$(Include=..\..\..\general_functions\configIni.txt);
+$(Include=..\..\config\projectConfig.txt);
+
+Call dataSourcePaths;
+Call englishUSVars;
+Call removeSpellingAccent;
+
+address:
+LOAD 
+	add_id, 
+	MapSubString('removeSpellingAccent', add_street) as add_street, 
+	add_number, 
+	add_zip_code, 
+	city_id
+FROM [$(vPathMirrors)$(vProjectName)\address.qvd] (qvd);
+
+LEFT JOIN(address)
+LOAD 
+	*
+FROM [$(vPathMirrors)$(vProjectName)\city.qvd] (qvd);
+
+LEFT JOIN(address)
+LOAD 
+	*
+FROM [$(vPathMirrors)$(vProjectName)\state.qvd] (qvd);
+
+LEFT JOIN(address)
+LOAD 
+	*
+FROM [$(vPathMirrors)$(vProjectName)\country.qvd] (qvd);
+
+Call createFolders('$(vPathTransformed)','$(vProjectName)');
+Call storeFiles('$(vPathTransformed)','$(vProjectName)',Null(),Null());

@@ -1,0 +1,34 @@
+﻿///$tab Main
+
+$(Include=..\..\..\general_functions\configIni.txt);
+$(Include=..\..\config\projectConfig.txt);
+
+Call dataSourcePaths;
+Call englishUSVars;
+
+products:
+LOAD 
+	prd_cod, 
+	prd_model, 
+	prd_engine, 
+	//prd_weight, not relevant to the business
+	prd_cost, 
+	prd_price, 
+	prd_max_speed, 
+	prd_doors, 
+	prd_passenger, 
+	pcat_id, 
+	pbrd_id
+FROM [$(vPathMirrors)$(vProjectName)\products.qvd] (qvd);
+
+LEFT JOIN(products)
+LOAD * FROM [$(vPathMirrors)$(vProjectName)\product_brand.qvd] (qvd);
+
+LEFT JOIN(products)
+LOAD 
+	pcat_id, 
+    pcat_name
+FROM [$(vPathMirrors)$(vProjectName)\product_category.qvd] (qvd);
+
+Call createFolders('$(vPathTransformed)','$(vProjectName)');
+Call storeFiles('$(vPathTransformed)','$(vProjectName)',Null(),Null());

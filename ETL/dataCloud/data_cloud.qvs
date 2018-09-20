@@ -1,0 +1,90 @@
+///$tab Main
+
+$(Include=..\..\..\general_functions\configIni.txt);
+$(Include=..\..\config\projectConfig.txt);
+
+Call dataSourcePaths;
+Call englishUSVars;
+Call connectToCarSalesDB;
+
+fact_sales:
+LOAD DISTINCT
+	sle_itm_id,
+	sle_id, 
+	store_id, 
+	store_add_id,
+	cust_id, 
+	cust_add_id,
+	emp_cod, 
+	prd_cod, 
+	amount, 
+	prd_cost,
+	date(date_sales) as date_sales,
+	sle_quantity_items, 
+	quantity
+FROM [$(vPathTransformed)$(vProjectName)\sales.qvd] (qvd);
+
+dim_employee:
+LOAD DISTINCT
+	emp_cod, 
+	emp_name, 
+	emp_birth_date, 
+	emp_gender, 
+	emp_commision,  
+	edu_level, 
+	pos_name,
+	emp_age
+FROM [$(vPathTransformed)$(vProjectName)\employees.qvd] (qvd);
+
+dim_customer_address:
+LOAD DISTINCT
+	add_id as cust_add_id, 
+	add_street as cust_street,  
+	add_zip_code as cust_zip_code, 
+	city_name as cust_city, 
+	st_name as cust_state, 
+	st_initial as cust_state_initials, 
+	ct_name as cust_country
+FROM [$(vPathTransformed)$(vProjectName)\address.qvd] (qvd)
+WHERE EXISTS(cust_add_id,add_id);
+
+dim_store_address:
+LOAD DISTINCT
+	add_id as store_add_id, 
+	add_street, 
+	add_zip_code, 
+	city_name, 
+	st_name, 
+	st_initial, 
+	ct_name
+FROM [$(vPathTransformed)$(vProjectName)\address.qvd] (qvd)
+WHERE EXISTS(store_add_id,add_id);
+
+dim_products:
+LOAD DISTINCT  
+     prd_cod, 
+     prd_model, 
+     prd_engine, 
+     prd_max_speed, 
+     prd_doors, 
+     prd_passenger, 
+     pbrd_name, 
+     pcat_name
+FROM [$(vPathTransformed)$(vProjectName)\products.qvd] (qvd);
+
+dim_customers:
+LOAD DISTINCT
+	cust_id, 
+	cust_name,
+	cust_gender, 
+	cust_birth_date,
+	cust_age
+FROM [$(vPathTransformed)$(vProjectName)\customers.qvd] (qvd);
+
+dim_store:
+LOAD DISTINCT
+	store_id, 
+    store_name
+FROM [$(vPathMirrors)$(vProjectName)\stores.qvd] (qvd);
+
+Call buildCalendar('fact_sales', 'date_sales', 'dim_date');

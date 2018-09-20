@@ -1,0 +1,24 @@
+///$tab Main
+
+$(Include=..\..\..\general_functions\configIni.txt);
+$(Include=..\..\config\projectConfig.txt);
+
+Call dataSourcePaths;
+Call englishUSVars;
+Call removeSpellingAccent;
+
+customers:
+LOAD cust_id, 
+     cust_first_name, 
+     cust_last_name, 
+     cust_first_name&' '&cust_last_name as cust_name,
+     if(cust_gender='M', 'Male','Female') as cust_gender, 
+     cust_birth_date,
+     Year(now())-Year(cust_birth_date) as cust_age,
+     cust_credit_limit, 
+     cust_first_buy, 
+     cust_add_id
+FROM [$(vPathMirrors)$(vProjectName)\customers.qvd] (qvd);
+
+Call createFolders('$(vPathTransformed)','$(vProjectName)');
+Call storeFiles('$(vPathTransformed)','$(vProjectName)',Null(),Null());
